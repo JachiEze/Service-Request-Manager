@@ -1,0 +1,64 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+.sidebar {
+    background-color: #003366; /* Dark blue */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 56px; /* match header height (navbar is ~56px) */
+    left: 0;
+    height: calc(100vh - 56px);
+    width: 220px;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #004080;
+    text-decoration: none;
+}
+
+.content-wrapper {
+    padding: 1rem;
+    text-align: left;
+}
+
+
+.content-area {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+

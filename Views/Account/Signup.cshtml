@@ -1,0 +1,33 @@
+@model ServiceRequestForm.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<h2 style="text-align:center; margin-bottom:20px;">Create an Account</h2>
+
+<form asp-action="SignUp" method="post" style="max-width: 400px; margin: 0 auto;">
+    <div style="margin-bottom: 15px;">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div style="margin-bottom: 15px;">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" style="padding: 10px 20px; width: 100%;">Sign Up</button>
+
+    <div style="text-align:center; margin-top:10px;">
+        <a asp-action="Login" class="btn btn-secondary" style="padding: 8px 15px;">Back to Login</a>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div style="color:red; margin-top: 15px; text-align: center;">
+            @Html.ValidationSummary()
+        </div>
+    }
+</form>

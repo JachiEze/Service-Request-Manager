@@ -1,0 +1,167 @@
+@model ServiceRequestForm.Models.ServiceRequest
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewBag.Title = "User Page";
+}
+
+<div class="content-wrapper">
+<h2>Welcome, User!</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (Model != null)
+{
+    <form asp-action="SendForm" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Service Request Details
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Request Title</label>
+                        <input asp-for="RequestTitle" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Entity</label>
+                        <select asp-for="Entity"
+                                asp-items="@(new SelectList(((Dictionary<string, string[]>)ViewBag.Entities).Keys, Model.Entity))"
+                                id="entitySelect"
+                                class="form-select">
+                            <option value="">-- Select Entity --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Department</label>
+                        <select asp-for="Department" id="departmentSelect" class="form-select">
+                            <option value="">-- Select Department --</option>
+                            @if (!string.IsNullOrEmpty(Model.Entity) && ((Dictionary<string, string[]>)ViewBag.Entities).ContainsKey(Model.Entity))
+                            {
+                                foreach (var dept in ((Dictionary<string, string[]>)ViewBag.Entities)[Model.Entity])
+                                {
+                                    <option value="@dept" selected="@(Model.Department == dept)">@dept</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Number of Personnel</label>
+                        <input asp-for="NumberOfPersonnel" class="form-control" type="number" />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Service Description</label>
+                        <textarea asp-for="ServiceDescription" class="form-control"></textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Proposed Service Start Date</label>
+                        <input asp-for="ProposedServiceStartDate"
+       class="form-control"
+       type="date"
+       min="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Personnel Type</label>
+                        <select asp-for="PersonnelType"
+                                asp-items="@(new SelectList(ViewBag.PersonnelTypes, Model.PersonnelType))"
+                                class="form-select">
+                            <option value="">-- Select Personnel Type --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Location</label>
+                        <select asp-for="Location"
+                                asp-items="@(new SelectList(ViewBag.Locations, Model.Location))"
+                                class="form-select">
+                            <option value="">-- Select Location --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Service Scheme</label>
+                        <select asp-for="ServiceScheme"
+                                asp-items="@(new SelectList(ViewBag.ServiceSchemes, Model.ServiceScheme))"
+                                class="form-select">
+                            <option value="">-- Select Service Scheme --</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Cost Centre</label>
+                        <input asp-for="CostCentre" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">GL Account</label>
+                        <input asp-for="GlAccount" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Job Impact</label>
+                        <input asp-for="JobImpact" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Budget Owner</label>
+                        <input asp-for="BudgetOwner" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">User Comment</label>
+                        <textarea asp-for="User1Comment" class="form-control"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Validator Comment</label>
+                        <textarea asp-for="User2Comment" class="form-control" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-success">Send Form</button>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <p>No form in progress.</p>
+}
+</div>
+
+<script>
+    var entityMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize<Dictionary<string, string[]>>(
+        (Dictionary<string, string[]>)ViewBag.Entities
+    ));
+
+    document.getElementById("entitySelect").addEventListener("change", function () {
+        var selectedEntity = this.value;
+        var deptSelect = document.getElementById("departmentSelect");
+        deptSelect.innerHTML = '<option value="">-- Select Department --</option>';
+
+        if (entityMap[selectedEntity]) {
+            entityMap[selectedEntity].forEach(function (dept) {
+                var opt = document.createElement("option");
+                opt.value = dept;
+                opt.textContent = dept;
+                deptSelect.appendChild(opt);
+            });
+        }
+    });
+</script>
+
+
+
+

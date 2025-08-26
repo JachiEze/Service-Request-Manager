@@ -1,0 +1,54 @@
+@model IEnumerable<ServiceRequestForm.Models.ServiceRequest>
+@{
+    ViewData["Title"] = "Approver Page";
+}
+
+
+<div class="content-wrapper">
+<h2>Welcome, Approver!</h2>
+
+@if (!Model.Any())
+{
+    <p>No forms pending approval.</p>
+}
+else
+{
+    foreach (var form in Model)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                Service Request Details
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6"><strong>Request Title:</strong> @form.RequestTitle</div>
+                    <div class="col-md-6"><strong>Entity:</strong> @form.Entity</div>
+                    <div class="col-md-6"><strong>Department:</strong> @form.Department</div>
+                    <div class="col-md-6"><strong>Number of Personnel:</strong> @form.NumberOfPersonnel</div>
+                    <div class="col-12"><strong>Service Description:</strong> @form.ServiceDescription</div>
+                    <div class="col-md-6"><strong>Proposed Start Date:</strong> @form.ProposedServiceStartDate.ToString("yyyy-MM-dd")</div>
+                    <div class="col-md-6"><strong>Personnel Type:</strong> @form.PersonnelType</div>
+                    <div class="col-md-6"><strong>Location:</strong> @form.Location</div>
+                    <div class="col-md-6"><strong>Service Scheme:</strong> @form.ServiceScheme</div>
+                    <div class="col-md-6"><strong>Cost Centre:</strong> @form.CostCentre</div>
+                    <div class="col-md-6"><strong>GL Account:</strong> @form.GlAccount</div>
+                    <div class="col-md-6"><strong>Budget Owner:</strong> @form.BudgetOwner</div>
+                    <div class="col-md-6"><strong>Job Impact:</strong> @form.JobImpact</div>
+                    <div class="col-12"><strong>User Comment:</strong> @form.User1Comment</div>
+                    <div class="col-12"><strong>Validator Comment:</strong> @form.User2Comment</div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <form asp-action="ApproveForm" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@form.Id" />
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+            </div>
+        </div>
+    }
+}
+</div>
+
+
+
+

@@ -1,0 +1,232 @@
+@model IEnumerable<ServiceRequestForm.Models.ServiceRequest>
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewBag.Title = "Validator Page";
+}
+
+<div class="content-wrapper">
+<h2>Welcome, Validator!</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No form awaiting validation.</p>
+}
+else
+{
+    foreach (var form in Model)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                Service Request Details
+            </div>
+
+            <form asp-action="UpdateForm" method="post">
+                <input type="hidden" name="Id" value="@form.Id" />
+
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Request Title</label>
+                            <input name="RequestTitle" value="@form.RequestTitle" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Entity</label>
+                            <select name="Entity"
+                                    asp-items="@(new SelectList(((Dictionary<string, string[]>)ViewBag.Entities).Keys, form.Entity))"
+                                    id="entitySelect-@form.Id"
+                                    class="form-select">
+                                <option value="">-- Select Entity --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <select name="Department" id="departmentSelect-@form.Id" class="form-select">
+                                <option value="">-- Select Department --</option>
+                                @if (!string.IsNullOrEmpty(form.Entity) && ((Dictionary<string, string[]>)ViewBag.Entities).ContainsKey(form.Entity))
+                                {
+                                    foreach (var dept in ((Dictionary<string, string[]>)ViewBag.Entities)[form.Entity])
+                                    {
+                                        <option value="@dept" selected="@(form.Department == dept)">@dept</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Number of Personnel</label>
+                            <input name="NumberOfPersonnel" value="@form.NumberOfPersonnel" class="form-control" type="number" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Service Description</label>
+                            <textarea name="ServiceDescription" class="form-control">@form.ServiceDescription</textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Proposed Service Start Date</label>
+                           <input name="ProposedServiceStartDate"
+       value="@(form.ProposedServiceStartDate.ToString("yyyy-MM-dd"))"
+       class="form-control"
+       type="date"
+       min="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Personnel Type</label>
+                            <select name="PersonnelType"
+                                    asp-items="@(new SelectList(ViewBag.PersonnelTypes, form.PersonnelType))"
+                                    class="form-select">
+                                <option value="">-- Select Personnel Type --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <select name="Location"
+                                    asp-items="@(new SelectList(ViewBag.Locations, form.Location))"
+                                    class="form-select">
+                                <option value="">-- Select Location --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Service Scheme</label>
+                            <select name="ServiceScheme"
+                                    asp-items="@(new SelectList(ViewBag.ServiceSchemes, form.ServiceScheme))"
+                                    class="form-select">
+                                <option value="">-- Select Service Scheme --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Cost Centre</label>
+                            <select name="CostCentre"
+                                    asp-items="@(new SelectList(((Dictionary<string, string[]>)ViewBag.CostCentres).Keys, form.CostCentre))"
+                                    id="costCentreSelect-@form.Id"
+                                    class="form-select">
+                                <option value="">-- Select Cost Centre --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">GL Account</label>
+                            <select name="GlAccount" id="glAccountSelect-@form.Id" class="form-select">
+                                <option value="">-- Select GL Account --</option>
+                                @if (!string.IsNullOrEmpty(form.CostCentre) && ((Dictionary<string, string[]>)ViewBag.CostCentres).ContainsKey(form.CostCentre))
+                                {
+                                    foreach (var gl in ((Dictionary<string, string[]>)ViewBag.CostCentres)[form.CostCentre])
+                                    {
+                                        <option value="@gl" selected="@(form.GlAccount == gl)">@gl</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Job Impact</label>
+                            <select name="JobImpact"
+                                    asp-items="@(new SelectList(ViewBag.JobImpacts, form.JobImpact))"
+                                    class="form-select">
+                                <option value="">-- Select Job Impact --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Budget Owner</label>
+                            <input name="BudgetOwner" value="@form.BudgetOwner" class="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">User Comment</label>
+                            <textarea name="User1Comment" class="form-control" readonly>@form.User1Comment</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Validator Comment</label>
+                            <textarea name="User2Comment" class="form-control">@form.User2Comment</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="card-footer d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                    <div>
+                        <button type="submit"
+                                class="btn btn-success"
+                                formaction="@Url.Action("SendToUser3")">
+                            Send to Approver
+                        </button>
+                        <button type="submit"
+                                class="btn btn-warning"
+                                formaction="@Url.Action("ReturnToUser1")">
+                            Return to User
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    }
+}
+</div>
+
+
+<script>
+    var entityMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize<Dictionary<string, string[]>>(
+        (Dictionary<string, string[]>)ViewBag.Entities
+    ));
+
+    var costCentreMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize<Dictionary<string, string[]>>(
+        (Dictionary<string, string[]>)ViewBag.CostCentres
+    ));
+
+    document.querySelectorAll("[id^='entitySelect-']").forEach(function (entityDropdown) {
+        entityDropdown.addEventListener("change", function () {
+            var formId = this.id.split('-')[1];
+            var selectedEntity = this.value;
+            var deptSelect = document.getElementById("departmentSelect-" + formId);
+            deptSelect.innerHTML = '<option value="">-- Select Department --</option>';
+
+            if (entityMap[selectedEntity]) {
+                entityMap[selectedEntity].forEach(function (dept) {
+                    var opt = document.createElement("option");
+                    opt.value = dept;
+                    opt.textContent = dept;
+                    deptSelect.appendChild(opt);
+                });
+            }
+        });
+    });
+
+    document.querySelectorAll("[id^='costCentreSelect-']").forEach(function (costCentreDropdown) {
+        costCentreDropdown.addEventListener("change", function () {
+            var formId = this.id.split('-')[1];
+            var selectedCostCentre = this.value;
+            var glSelect = document.getElementById("glAccountSelect-" + formId);
+            glSelect.innerHTML = '<option value="">-- Select GL Account --</option>';
+
+            if (costCentreMap[selectedCostCentre]) {
+                costCentreMap[selectedCostCentre].forEach(function (gl) {
+                    var opt = document.createElement("option");
+                    opt.value = gl;
+                    opt.textContent = gl;
+                    glSelect.appendChild(opt);
+                });
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
