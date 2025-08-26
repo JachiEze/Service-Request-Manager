@@ -19,8 +19,8 @@ namespace ServiceRequestForm.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserAccount>().HasData(
-                new UserAccount { Id = 1, Username = "divineezenwamadu@gmail.com", Password = "validator123", Role = "Validator" },
-                new UserAccount { Id = 2, Username = "memesrus5000@gmail.com", Password = "approver123", Role = "Approver" }
+                new UserAccount { Id = 1, Username = "", Password = "validator123", Role = "Validator" },
+                new UserAccount { Id = 2, Username = "", Password = "approver123", Role = "Approver" }
             );
         }
     }
