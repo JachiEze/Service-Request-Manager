@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ServiceRequestForm")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f17fe08f415eeb7265a010a89c1478623c4ef6df")]
 [assembly: System.Reflection.AssemblyProductAttribute("ServiceRequestForm")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ServiceRequestForm")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
