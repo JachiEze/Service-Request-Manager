@@ -5,48 +5,99 @@
 
 
 <div class="content-wrapper">
-<h2>Welcome, Approver!</h2>
-
-@if (!Model.Any())
-{
-    <p>No forms pending approval.</p>
-}
-else
-{
-    foreach (var form in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-success text-white">
-                Service Request Details
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6"><strong>Request Title:</strong> @form.RequestTitle</div>
-                    <div class="col-md-6"><strong>Entity:</strong> @form.Entity</div>
-                    <div class="col-md-6"><strong>Department:</strong> @form.Department</div>
-                    <div class="col-md-6"><strong>Number of Personnel:</strong> @form.NumberOfPersonnel</div>
-                    <div class="col-12"><strong>Service Description:</strong> @form.ServiceDescription</div>
-                    <div class="col-md-6"><strong>Proposed Start Date:</strong> @form.ProposedServiceStartDate.ToString("yyyy-MM-dd")</div>
-                    <div class="col-md-6"><strong>Personnel Type:</strong> @form.PersonnelType</div>
-                    <div class="col-md-6"><strong>Location:</strong> @form.Location</div>
-                    <div class="col-md-6"><strong>Service Scheme:</strong> @form.ServiceScheme</div>
-                    <div class="col-md-6"><strong>Cost Centre:</strong> @form.CostCentre</div>
-                    <div class="col-md-6"><strong>GL Account:</strong> @form.GlAccount</div>
-                    <div class="col-md-6"><strong>Budget Owner:</strong> @form.BudgetOwner</div>
-                    <div class="col-md-6"><strong>Job Impact:</strong> @form.JobImpact</div>
-                    <div class="col-12"><strong>User Comment:</strong> @form.User1Comment</div>
-                    <div class="col-12"><strong>Validator Comment:</strong> @form.User2Comment</div>
-                </div>
-            </div>
-            <div class="card-footer text-end">
-                <form asp-action="ApproveForm" method="post" class="d-inline">
-                    <input type="hidden" name="id" value="@form.Id" />
-                    <button type="submit" class="btn btn-success">Approve</button>
-                </form>
-            </div>
+        <div class="d-flex justify-content-end mb-3">
+            <form method="get" action="@Url.Action("Index", "User3")" class="d-flex" style="max-width:350px;">
+                <input type="text" name="search" class="form-control me-2" value="@Context.Request.Query["search"]" />
+                <button type="submit" class="btn btn-outline-success">Search</button>
+            </form>
         </div>
     }
+@if (TempData["Notification"] != null)
+{
+    <div id="popupNotification" class="alert alert-success" style="position:fixed;top:20px;right:20px;z-index:9999;min-width:200px;">
+        @TempData["Notification"]
+    </div>
+    <script>
+        setTimeout(function() {
+            var popup = document.getElementById('popupNotification');
+            if (popup) popup.style.display = 'none';
+        }, 2500);
+    </script>
 }
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg w-100" style="max-width: 700px;">
+      
+        <div class="card-body">
+            @if (Model == null || !Model.Any())
+            {
+                <div class="w-100 py-4" style="background-color: #e3f2fd; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 500; margin-bottom: 1rem;">
+                    No forms pending approval.
+                </div>
+            }
+            else
+            {
+                @foreach (var form in Model)
+                {
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <strong>Request Title:</strong> @form.RequestTitle
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Entity:</strong> @form.Entity
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Department:</strong> @form.Department
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Number of Personnel:</strong> @form.NumberOfPersonnel
+                        </div>
+                        <div class="col-12">
+                            <strong>Service Description:</strong> @form.ServiceDescription
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Proposed Start Date:</strong> @form.ProposedServiceStartDate.ToString("yyyy-MM-dd")
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Personnel Type:</strong> @form.PersonnelType
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Location:</strong> @form.Location
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Service Scheme:</strong> @form.ServiceScheme
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Cost Centre:</strong> @form.CostCentre
+                        </div>
+                        <div class="col-md-6">
+                            <strong>GL Account:</strong> @form.GlAccount
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Budget Owner:</strong> @form.BudgetOwner
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Job Impact:</strong> @form.JobImpact
+                        </div>
+                        <div class="col-12">
+                            <strong>User Comment:</strong> @form.User1Comment
+                        </div>
+                        <div class="col-12">
+                            <strong>Validator Comment:</strong> @form.User2Comment
+                        </div>
+                        <div class="text-end mt-4">
+                            <form asp-action="ApproveForm" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@form.Id" />
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
 </div>
 
 
