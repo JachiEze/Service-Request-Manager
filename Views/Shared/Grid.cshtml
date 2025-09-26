@@ -4,39 +4,39 @@
     ViewData["Title"] = "All Service Requests";
 }
 
-<div class="container-fluid">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-        <h2 class="mb-2">Service Request Grid</h2>
 
-        <div class="d-flex gap-2 mb-2">
-            <form method="get" asp-action="Grid" class="d-flex">
-                <input type="text" name="search" value="@Context.Request.Query["search"]"
-                       class="form-control me-2" placeholder="Search requests..." />
-                <button type="submit" class="btn btn-primary">Search</button>
+<div class="container py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6 text-start">
+            <form method="get" asp-action="Index" class="d-inline">
+                <button type="submit" class="btn btn-outline-secondary px-3"><i class="bi bi-arrow-left"></i> Back</button>
             </form>
-
-            <form method="get" asp-action="Index" class="mb-0">
-                <button type="submit" class="btn btn-secondary">Back to Dashboard</button>
+        </div>
+        <div class="col-md-6 text-end">
+            <form method="get" asp-action="Grid" class="d-inline-flex align-items-center gap-2">
+                <input type="text" name="search" value="@Context.Request.Query["search"]"
+                       class="form-control border-primary" style="max-width:220px;" />
+                <button type="submit" class="btn btn-primary px-3">Search</button>
             </form>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped align-middle">
-                    <thead class="table-dark">
-                        <tr>
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-primary">
+                        <tr style="font-size:0.97rem;">
                             <th>ID</th>
-                            <th>Request Title</th>
+                            <th>Title</th>
                             <th>Entity</th>
                             <th>Department</th>
-                            <th># of Personnel</th>
-                            <th>Service Description</th>
-                            <th>Proposed Start Date</th>
-                            <th>Personnel Type</th>
+                            <th># Personnel</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>Type</th>
                             <th>Location</th>
-                            <th>Service Scheme</th>
+                            <th>Scheme</th>
                             <th>User Comment</th>
                             <th>Cost Centre</th>
                             <th>GL Account</th>
@@ -51,8 +51,16 @@
                         {
                             foreach (var form in Model)
                             {
-                                <tr>
-                                    <td>@form.Id</td>
+                                var statusClass = form.Status switch
+                                {
+                                    "Approved" => "badge bg-success",
+                                    "Sent To Validator" => "badge bg-info text-dark",
+                                    "Returned To User" => "badge bg-warning text-dark",
+                                    "Draft" => "badge bg-secondary",
+                                    _ => "badge bg-light text-dark"
+                                };
+                                <tr style="transition:background 0.2s;">
+                                    <td class="fw-bold">@form.Id</td>
                                     <td>@form.RequestTitle</td>
                                     <td>@form.Entity</td>
                                     <td>@form.Department</td>
@@ -68,14 +76,14 @@
                                     <td>@form.BudgetOwner</td>
                                     <td>@form.JobImpact</td>
                                     <td>@form.User2Comment</td>
-                                    <td>@form.Status</td>
+                                    <td><span class="@statusClass" style="font-size:0.95em;">@form.Status</span></td>
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="17" class="text-center text-muted">
+                                <td colspan="17" class="text-center text-muted py-4">
                                     No matching service requests found.
                                 </td>
                             </tr>
@@ -86,5 +94,9 @@
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
 
 
