@@ -92,7 +92,7 @@ namespace ServiceRequestForm.Controllers
 
         if (inProgressForm)
         {
-            TempData["Error"] = "You cannot request a new form until the current one is approved.";
+            TempData["Notification"] = "You cannot request a new form until the current one is approved.";
             return RedirectToAction("Index");
         }
 
@@ -134,6 +134,7 @@ namespace ServiceRequestForm.Controllers
                 existingForm.JobImpact = form.JobImpact;
 
                 _context.SaveChanges();
+                TempData["Notification"] = "Successfully Sent";
             }
             return RedirectToAction("Index");
         }
