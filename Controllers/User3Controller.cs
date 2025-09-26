@@ -17,18 +17,24 @@ namespace ServiceRequestForm.Controllers
             _context = context;
         }
 
-public IActionResult Index()
-{
-    if (HttpContext.Session.GetString("Role") != "Approver")
-        return RedirectToAction("Login", "Account");
+    public IActionResult Index(string search)
+    {
+        if (HttpContext.Session.GetString("Role") != "Approver")
+            return RedirectToAction("Login", "Account");
 
-    var formsToApprove = _context.ServiceRequests
-        .Where(f => f.Status == "Sent To Approver")
-        .OrderBy(f => f.Id)
-        .ToList();
+        var formsToApprove = _context.ServiceRequests
+            .Where(f => f.Status == "Sent To Approver")
+            .AsQueryable();
 
-    return View(formsToApprove); 
-}
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            formsToApprove = formsToApprove.Where(f => EF.Functions.Like(f.RequestTitle, $"%{search}%"));
+        }
+
+        var result = formsToApprove.OrderBy(f => f.Id).ToList();
+
+        return View(result);
+    }
 
         [HttpPost]
         public IActionResult ApproveForm(int id)
@@ -38,6 +44,7 @@ public IActionResult Index()
         {
             form.Status = "Approved";
             _context.SaveChanges();
+            TempData["Notification"] = "Service Request Approved";
         }
         return RedirectToAction("Index");
         }
