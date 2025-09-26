@@ -6,139 +6,121 @@
 }
 
 <div class="content-wrapper">
-<h2>Welcome, User!</h2>
-
-@if (ViewBag.Error != null)
+@if (TempData["Notification"] != null)
 {
-    <div class="alert alert-danger">@ViewBag.Error</div>
+    var notification = TempData["Notification"]?.ToString();
+    var isError = notification == "You cannot request a new form until the current one is approved.";
+    var alertClass = isError ? "alert-danger" : "alert-success";
+    <div id="popupNotification" class="alert @alertClass" style="position:fixed;top:20px;right:20px;z-index:9999;min-width:200px;">
+        @notification
+    </div>
+    <script>
+        setTimeout(function() {
+            var popup = document.getElementById('popupNotification');
+            if (popup) popup.style.display = 'none';
+        }, 2500);
+    </script>
 }
-
-@if (Model != null)
-{
-    <form asp-action="SendForm" method="post">
-        <input type="hidden" asp-for="Id" />
-
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                Service Request Details
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Request Title</label>
-                        <input asp-for="RequestTitle" class="form-control" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Entity</label>
-                        <select asp-for="Entity"
-                                asp-items="@(new SelectList(((Dictionary<string, string[]>)ViewBag.Entities).Keys, Model.Entity))"
-                                id="entitySelect"
-                                class="form-select">
-                            <option value="">-- Select Entity --</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Department</label>
-                        <select asp-for="Department" id="departmentSelect" class="form-select">
-                            <option value="">-- Select Department --</option>
-                            @if (!string.IsNullOrEmpty(Model.Entity) && ((Dictionary<string, string[]>)ViewBag.Entities).ContainsKey(Model.Entity))
-                            {
-                                foreach (var dept in ((Dictionary<string, string[]>)ViewBag.Entities)[Model.Entity])
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg w-100" style="max-width: 700px;">
+        <div class="card-body">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            @if (Model != null)
+            {
+                <form asp-action="SendForm" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Request Title</label>
+                            <input asp-for="RequestTitle" class="form-control" placeholder="Enter request title" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Entity</label>
+                            <select asp-for="Entity"
+                                    asp-items="@(new SelectList(((Dictionary<string, string[]>)ViewBag.Entities).Keys, Model.Entity))"
+                                    id="entitySelect"
+                                    class="form-select">
+                                <option value="">-- Select Entity --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <select asp-for="Department" id="departmentSelect" class="form-select">
+                                <option value="">-- Select Department --</option>
+                                @if (!string.IsNullOrEmpty(Model.Entity) && ((Dictionary<string, string[]>)ViewBag.Entities).ContainsKey(Model.Entity))
                                 {
-                                    <option value="@dept" selected="@(Model.Department == dept)">@dept</option>
+                                    foreach (var dept in ((Dictionary<string, string[]>)ViewBag.Entities)[Model.Entity])
+                                    {
+                                        <option value="@dept" selected="@(Model.Department == dept)">@dept</option>
+                                    }
                                 }
-                            }
-                        </select>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Number of Personnel</label>
+                            <input asp-for="NumberOfPersonnel" class="form-control" type="number" placeholder="Enter number" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Service Description</label>
+                            <textarea asp-for="ServiceDescription" class="form-control" placeholder="Describe the service"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Proposed Service Start Date</label>
+                            <input asp-for="ProposedServiceStartDate"
+                                   class="form-control"
+                                   type="date"
+                                   min="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Personnel Type</label>
+                            <select asp-for="PersonnelType"
+                                    asp-items="@(new SelectList(ViewBag.PersonnelTypes, Model.PersonnelType))"
+                                    class="form-select">
+                                <option value="">-- Select Personnel Type --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <select asp-for="Location"
+                                    asp-items="@(new SelectList(ViewBag.Locations, Model.Location))"
+                                    class="form-select">
+                                <option value="">-- Select Location --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Service Scheme</label>
+                            <select asp-for="ServiceScheme"
+                                    asp-items="@(new SelectList(ViewBag.ServiceSchemes, Model.ServiceScheme))"
+                                    class="form-select">
+                                <option value="">-- Select Service Scheme --</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">User Comment</label>
+                            <textarea asp-for="User1Comment" class="form-control" placeholder="Add your comment"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Validator Comment</label>
+                            <textarea asp-for="User2Comment" class="form-control" readonly placeholder="Validator's comment"></textarea>
+                        </div>
                     </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Number of Personnel</label>
-                        <input asp-for="NumberOfPersonnel" class="form-control" type="number" />
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-success px-4 py-2">Send Form</button>
                     </div>
-
-                    <div class="col-12">
-                        <label class="form-label">Service Description</label>
-                        <textarea asp-for="ServiceDescription" class="form-control"></textarea>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Proposed Service Start Date</label>
-                        <input asp-for="ProposedServiceStartDate"
-       class="form-control"
-       type="date"
-       min="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Personnel Type</label>
-                        <select asp-for="PersonnelType"
-                                asp-items="@(new SelectList(ViewBag.PersonnelTypes, Model.PersonnelType))"
-                                class="form-select">
-                            <option value="">-- Select Personnel Type --</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Location</label>
-                        <select asp-for="Location"
-                                asp-items="@(new SelectList(ViewBag.Locations, Model.Location))"
-                                class="form-select">
-                            <option value="">-- Select Location --</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Service Scheme</label>
-                        <select asp-for="ServiceScheme"
-                                asp-items="@(new SelectList(ViewBag.ServiceSchemes, Model.ServiceScheme))"
-                                class="form-select">
-                            <option value="">-- Select Service Scheme --</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Cost Centre</label>
-                        <input asp-for="CostCentre" class="form-control" readonly />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">GL Account</label>
-                        <input asp-for="GlAccount" class="form-control" readonly />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Job Impact</label>
-                        <input asp-for="JobImpact" class="form-control" readonly />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Budget Owner</label>
-                        <input asp-for="BudgetOwner" class="form-control" readonly />
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">User Comment</label>
-                        <textarea asp-for="User1Comment" class="form-control"></textarea>
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">Validator Comment</label>
-                        <textarea asp-for="User2Comment" class="form-control" readonly></textarea>
-                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="w-100 py-4" style="background-color: #e3f2fd; border-radius: 8px; text-align: center; font-size: 1.2rem; font-weight: 500; margin-bottom: 1rem;">
+                    No forms currently in progress.
                 </div>
-            </div>
-            <div class="card-footer text-end">
-                <button type="submit" class="btn btn-success">Send Form</button>
-            </div>
+            }
         </div>
-    </form>
-}
-else
-{
-    <p>No form in progress.</p>
-}
+    </div>
+</div>
 </div>
 
 <script>
