@@ -35,17 +35,22 @@ namespace ServiceRequestForm.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
             if (HttpContext.Session.GetString("Role") != "Validator")
                 return RedirectToAction("Login", "Account");
 
             var forms = _context.ServiceRequests
                 .Where(f => f.Status == "Sent To Validator")
-                .OrderBy(f => f.Id)
-                .ToList(); 
+                .AsQueryable();
 
-            
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                forms = forms.Where(f => EF.Functions.Like(f.RequestTitle, $"%{search}%"));
+            }
+
+            var result = forms.OrderBy(f => f.Id).ToList();
+
             ViewBag.Entities = EntityDepartmentMap;
             ViewBag.CostCentres = CostCentreGlAccountMap;
             ViewBag.PersonnelTypes = new[] { "Expatriate", "Local" };
@@ -62,7 +67,7 @@ namespace ServiceRequestForm.Controllers
                 "Specialized skills"
             };
 
-            return View(forms);
+            return View(result);
         }
 
         [HttpGet]
@@ -119,6 +124,7 @@ namespace ServiceRequestForm.Controllers
             {
                 form.Status = "Sent To Approver";
                 _context.SaveChanges();
+                TempData["Notification"] = "Successfully Sent";
             }
             return RedirectToAction("Index");
         }
@@ -131,6 +137,7 @@ namespace ServiceRequestForm.Controllers
             {
                 form.Status = "Returned To User";
                 _context.SaveChanges();
+                TempData["Notification"] = "Successfully Returned";
             }
             return RedirectToAction("Index");
         }
